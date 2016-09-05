@@ -14,28 +14,28 @@
 import Foundation
 
 // Outputs
-let stderr = NSFileHandle.fileHandleWithStandardError()
-let stdin = NSFileHandle.fileHandleWithStandardInput()
-let stdout = NSFileHandle.fileHandleWithStandardOutput()
+let stderr = FileHandle.withStandardError
+let stdin = FileHandle.withStandardInput
+let stdout = FileHandle.withStandardOutput
 
 // Grab ARGV by getting process arguments and losing $0 from it
-var argv = Array(NSProcessInfo.processInfo().arguments.map { $0 as String })
-argv.removeAtIndex(0)
+var argv = Array(ProcessInfo.processInfo.arguments.map { $0 as String })
+argv.remove(at: 0)
 
 if argv.count > 0 {
     // Each argument is a potential filename, output contents if we can, or output error if not
-    let fileManager = NSFileManager.defaultManager()
+    let fileManager = FileManager.default
     
     for filename in argv {
-        if !fileManager.isReadableFileAtPath(filename) {
+        if !fileManager.isReadableFile(atPath: filename) {
             let errorMessage = "swcat: \(filename): No such file or directory\n"
-            stderr.writeData(errorMessage.dataUsingEncoding(NSUTF8StringEncoding))
+            stderr.write(errorMessage.data(using: String.Encoding.utf8)!)
             continue
         }
         
-        stdout.writeData(fileManager.contentsAtPath(filename))
+        stdout.write(fileManager.contents(atPath: filename)!)
     }
 } else {
     // Read from stdin
-    stdout.writeData(stdin.readDataToEndOfFile())
+    stdout.write(stdin.readDataToEndOfFile())
 }
