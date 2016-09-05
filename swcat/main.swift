@@ -28,7 +28,7 @@ if argv.count > 0 {
     
     for filename in argv {
         if !fileManager.isReadableFile(atPath: filename) {
-            let errorMessage = "swcat: \(filename): No such file or directory\n"
+            let errorMessage = "cat: \(filename): No such file or directory\n"
             stderr.write(errorMessage.data(using: String.Encoding.utf8)!)
             continue
         }
