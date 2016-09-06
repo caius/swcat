@@ -18,6 +18,9 @@ let stderr = FileHandle.withStandardError
 let stdin = FileHandle.withStandardInput
 let stdout = FileHandle.withStandardOutput
 
+// Exit code needs to change if just one error occurs
+var exit_code: Int32 = 0
+
 // Grab ARGV by getting process arguments and losing $0 from it
 var argv = Array(ProcessInfo.processInfo.arguments.map { $0 as String })
 argv.remove(at: 0)
@@ -31,10 +34,11 @@ if argv.count > 0 {
             stdout.write(stdin.readDataToEndOfFile())
             continue
         }
-
+        
         if !fileManager.isReadableFile(atPath: filename) {
             let errorMessage = "cat: \(filename): No such file or directory\n"
             stderr.write(errorMessage.data(using: String.Encoding.utf8)!)
+            exit_code = 1
             continue
         }
         
@@ -44,3 +48,5 @@ if argv.count > 0 {
     // Read from stdin
     stdout.write(stdin.readDataToEndOfFile())
 }
+
+exit(exit_code)
