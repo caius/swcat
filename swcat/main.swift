@@ -27,6 +27,11 @@ if argv.count > 0 {
     let fileManager = FileManager.default
     
     for filename in argv {
+        if filename == "-" {
+            stdout.write(stdin.readDataToEndOfFile())
+            continue
+        }
+
         if !fileManager.isReadableFile(atPath: filename) {
             let errorMessage = "cat: \(filename): No such file or directory\n"
             stderr.write(errorMessage.data(using: String.Encoding.utf8)!)
