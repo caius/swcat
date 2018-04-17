@@ -8,7 +8,8 @@
 
 // cat(1) (not a full) clone written in swift
 //
-// Given no arguments, prints stdin to stdout. Given arguments reads them as files, printing content to stdout. Errors on stderr if files not found.
+// Given no arguments, prints stdin to stdout. Given arguments reads them as
+// files, printing content to stdout. Errors on stderr if files not found.
 //
 
 import Foundation
@@ -19,7 +20,7 @@ let stdin = FileHandle.withStandardInput
 let stdout = FileHandle.withStandardOutput
 
 // Exit code needs to change if just one error occurs
-var exit_code: Int32 = 0
+var exitCode: Int32 = 0
 
 // Grab ARGV by getting process arguments and losing $0 from it
 var argv = Array(ProcessInfo.processInfo.arguments.map { $0 as String })
@@ -28,20 +29,20 @@ argv.remove(at: 0)
 if argv.count > 0 {
     // Each argument is a potential filename, output contents if we can, or output error if not
     let fileManager = FileManager.default
-    
+
     for filename in argv {
         if filename == "-" {
             stdout.write(stdin.readDataToEndOfFile())
             continue
         }
-        
+
         if !fileManager.isReadableFile(atPath: filename) {
             let errorMessage = "cat: \(filename): No such file or directory\n"
             stderr.write(errorMessage.data(using: String.Encoding.utf8)!)
-            exit_code = 1
+            exitCode = 1
             continue
         }
-        
+
         stdout.write(fileManager.contents(atPath: filename)!)
     }
 } else {
@@ -49,4 +50,4 @@ if argv.count > 0 {
     stdout.write(stdin.readDataToEndOfFile())
 }
 
-exit(exit_code)
+exit(exitCode)
